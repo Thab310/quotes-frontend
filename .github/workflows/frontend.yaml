@@ -7,12 +7,13 @@ on:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-    with:
-        fetch-depth: 0
+    
     
     steps:
     - uses: actions/checkout@v4
-    
+      with:
+          fetch-depth: 0
+      
     - name: Set up Node.js
       uses: actions/setup-node@v4
       with:
@@ -42,7 +43,6 @@ jobs:
     - name: Build and push frontend
       uses: docker/build-push-action@v5
       with:
-        context: ./frontend
         push: true
         tags: |
           thabelo/quotes-frontend:latest
