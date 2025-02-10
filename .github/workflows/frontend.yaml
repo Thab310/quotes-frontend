@@ -1,38 +1,30 @@
-name: Frontend CI/CD
+name: Frontend CI
 
 on:
   push:
     branches: [ main ]
-
+    
 permissions:
-  contents: write    
+  contents: write
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
     
-    
     steps:
     - uses: actions/checkout@v4
       with:
-          fetch-depth: 0
-      
-    - name: Set up Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-
+        fetch-depth: 0
+    
     - name: Calculate version
       id: version
       run: |
-        # Get the latest tag
-        latest_tag=$(git describe --tags --abbrev=0 --match "frontend-v*" 2>/dev/null || echo "frontend-v0.0.0")
-        # Increment patch version
+        latest_tag=$(git describe --tags --abbrev=0 --match "frontend-v*" 2>/dev/null || echo "frontend-v0.1.0")
         current_version=${latest_tag#frontend-v}
         IFS='.' read -r major minor patch <<< "$current_version"
         new_patch=$((patch + 1))
         new_version="v$major.$minor.$new_patch"
-        echo "new_version=$new_version" >> $GITHUB_OUTPUT    
+        echo "new_version=$new_version" >> $GITHUB_OUTPUT
         
     - name: Log in to Docker Hub
       uses: docker/login-action@v3
@@ -46,6 +38,7 @@ jobs:
     - name: Build and push frontend
       uses: docker/build-push-action@v5
       with:
+        context: frontend
         push: true
         tags: |
           thabelo/quotes-frontend:latest
