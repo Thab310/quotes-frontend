@@ -1,5 +1,5 @@
 # Build stage
-FROM node:20-alpine as build
+FROM node:20-alpine AS build
 
 WORKDIR /app
 
@@ -10,13 +10,14 @@ USER nodejsuser
 
 # Install dependencies
 COPY --chown=nodejsuser:nodejs package*.json ./
-RUN npm install
+RUN npm install --unsafe-perm
+
+# Add node_modules/.bin to PATH and ensure vite is executable
+ENV PATH="./node_modules/.bin:$PATH"
+RUN chmod +x ./node_modules/.bin/vite
 
 # Copy source code
 COPY --chown=nodejsuser:nodejs . .
-
-# Ensure the build directory exists and has correct permissions
-RUN mkdir -p dist && chown -R nodejsuser:nodejs dist
 
 # Build the application
 RUN npm run build
