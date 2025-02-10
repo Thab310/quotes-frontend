@@ -13,8 +13,8 @@ COPY --chown=nodejsuser:nodejs package*.json ./
 RUN npm install --unsafe-perm
 
 # Add node_modules/.bin to PATH and ensure vite is executable
-ENV PATH="./node_modules/.bin:$PATH"
-RUN chmod +x ./node_modules/.bin/vite
+ENV PATH="/app/node_modules/.bin:$PATH"
+RUN chmod +x /app/node_modules/.bin/vite
 
 # Copy source code
 COPY --chown=nodejsuser:nodejs . .
